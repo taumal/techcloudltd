@@ -38,12 +38,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Claims claims = jwtService.extractAllClaims(token);
             user = claims.getSubject();
+            request.setAttribute("claims", claims);
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(user, null, null)
             );
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
+            System.out.println("Invalid Token: " + e);
         }
 
         if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
