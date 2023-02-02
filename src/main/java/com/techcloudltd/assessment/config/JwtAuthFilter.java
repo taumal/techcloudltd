@@ -1,5 +1,6 @@
 package com.techcloudltd.assessment.config;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(7);
         String user = null;
         try {
-            user = jwtService.extractUser(token);
+            Claims claims = jwtService.extractAllClaims(token);
+            user = claims.getSubject();
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(user, null, null)
